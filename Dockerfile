@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-# 使用動態端口
+# 曝露動態端口
 EXPOSE 8080
 
 CMD ["npm", "start"]
