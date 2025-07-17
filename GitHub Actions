@@ -1,0 +1,28 @@
+name: Deploy Claude Proxy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build and run docker container
+      run: |
+        docker build -t claude-proxy .
+        docker run -d -p 8080:8080 claude-proxy
+
+    - name: Notify Cloudflare Zero Trust
+      run: |
+        curl -X POST -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+        -d '{"url": "https://github.com/JulianSung888/claude-proxy", "port": "8080"}' \
+        https://api.cloudflare.com/client/v4/accounts/juliansung/zero_trust/...
